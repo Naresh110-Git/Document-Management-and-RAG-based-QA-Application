@@ -1,0 +1,33 @@
+from setuptools import find_packages, setup
+
+setup(
+    name="rag-backend",
+    version="0.1.0",
+    description="FastAPI backend for document management and RAG-based Q&A.",
+    package_dir={"": "."},
+    packages=find_packages(where="."),
+    install_requires=[
+        "fastapi>=0.115.6",
+        "uvicorn[standard]>=0.34.0",
+        "SQLAlchemy[asyncio]>=2.0.36",
+        "alembic>=1.14.0",
+        "asyncpg>=0.30.0",
+        "pgvector>=0.3.6",
+        "pydantic>=2.10.4",
+        "pydantic-settings>=2.7.0",
+        "python-dotenv>=1.0.1",
+        "python-multipart>=0.0.20",
+        "bcrypt>=4.2.1",
+        "PyJWT>=2.10.1",
+        "email-validator>=2.2.0",
+        "PyMuPDF>=1.25.1",
+        "pdfplumber>=0.11.5",
+        "langchain-text-splitters>=0.3.4",
+        "sentence-transformers>=3.3.1",
+        "faiss-cpu>=1.9.0.post1",
+        "openai>=1.58.1",
+        "httpx>=0.28.1",
+        "tenacity>=9.0.0",
+        "aiosqlite>=0.19.0",
+    ],
+)
