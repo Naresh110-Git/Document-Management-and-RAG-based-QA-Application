@@ -39,6 +39,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         yield
     finally:
         await background_manager.stop()
+        from app.database.session import engine
+        await engine.dispose()
         logger.info("Shutting down %s", settings.app_name)
 
 

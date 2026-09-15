@@ -89,14 +89,25 @@ async def test_full_rag_workflow(monkeypatch, tmp_path):
     docs = list_resp.json()["documents"]
     assert any(d["id"] == doc_id for d in docs)
 
-    # 6. Ensure ingestion is completed (if not already completed inline)
-    try:
+    # 6. Ensure ingestion is completed
+    import asyncio
+    from uuid import UUID
+    from app.models.document import DocumentStatus
+    from app.repositories.document import DocumentRepository
+
+    target_uuid = UUID(doc_id)
+    for _ in range(50):
+        async with AsyncSessionLocal() as session:
+            doc_repo = DocumentRepository(session)
+            d = await doc_repo.get_by_id(target_uuid)
+            if d and d.status == DocumentStatus.READY:
+                break
+        await asyncio.sleep(0.1)
+    else:
         async with AsyncSessionLocal() as session:
             settings = Settings()
             ingest_svc = IngestionService(session=session, settings=settings)
-            await ingest_svc.process_document(uuid4().__class__(doc_id))
-    except Exception:
-        pass
+            await ingest_svc.process_document(target_uuid)
 
     # 7. Ask question via RAG
     chat_resp = client.post(
@@ -118,6 +129,7 @@ async def test_full_rag_workflow(monkeypatch, tmp_path):
     assert stream_resp.status_code == 200
     assert "text/event-stream" in stream_resp.headers["content-type"]
     assert "data:" in stream_resp.text
+    stream_resp.close()
 
     # 9. Verify history
     hist_resp = client.get("/api/v1/chat/history", headers=headers)
@@ -136,6 +148,12 @@ async def test_full_rag_workflow(monkeypatch, tmp_path):
     del_doc_resp = client.delete(f"/api/v1/documents/{doc_id}", headers=headers)
     assert del_doc_resp.status_code == 204
 
+    client.close()
+
+    # Allow pending async operations to settle before teardown
+    await asyncio.sleep(0.2)
+
     # Teardown DB tables
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
+    await engine.dispose()

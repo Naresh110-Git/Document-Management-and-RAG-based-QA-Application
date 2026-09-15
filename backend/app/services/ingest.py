@@ -61,6 +61,9 @@ class IngestionService:
         if doc is None:
             raise IngestionError("Document not found")
 
+        if doc.status == DocumentStatus.READY:
+            return
+
         await self.documents.mark_status(doc, DocumentStatus.PROCESSING)
 
         path = Path(doc.storage_path)
