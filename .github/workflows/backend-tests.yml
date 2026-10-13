@@ -73,6 +73,6 @@ jobs:
           ENVIRONMENT: test
         run: |
           alembic upgrade head
-          python -c "import asyncio; from app.database.session import engine; from sqlalchemy import text; async def check(): conn = await engine.connect(); res = await conn.execute(text('SELECT 1')); print('Database connected successfully:', res.scalar()); await conn.close(); await engine.dispose(); asyncio.run(check())"
+          alembic current
 
 
