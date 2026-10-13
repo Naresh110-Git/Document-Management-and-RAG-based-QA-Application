@@ -56,6 +56,8 @@ def do_run_migrations(connection: Connection) -> None:
 async def run_async_migrations() -> None:
     """Create an async engine and run migrations."""
     configuration = config.get_section(config.config_ini_section, {})
+    if settings.database_url:
+        configuration["sqlalchemy.url"] = settings.database_url
     connectable = async_engine_from_config(
         configuration,
         prefix="sqlalchemy.",
