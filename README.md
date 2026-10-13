@@ -1,5 +1,11 @@
 # Document Management and RAG-based Q&A Application
 
+[![CI Test Suite](https://github.com/Naresh110-Git/Document-Management-and-RAG-based-QA-Application/actions/workflows/backend-tests.yml/badge.svg)](https://github.com/Naresh110-Git/Document-Management-and-RAG-based-QA-Application/actions/workflows/backend-tests.yml)
+![Python](https://img.shields.io/badge/Python-3.12%20%7C%203.13-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16%20%2B%20pgvector-336791.svg)
+![Tests](https://img.shields.io/badge/Tests-33%20Passed-brightgreen.svg)
+
 Production-oriented FastAPI backend for authenticated document management, background PDF ingestion, embedding generation, vector search, and retrieval-augmented question answering (RAG).
 
 ## 1. Project Overview & Problem Statement
